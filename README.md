@@ -17,4 +17,6 @@
   <li>Styled Components</li>
   <li>React Hooks</li>
   <li>React-Icons</li>
+  <li>Docker</li>
+  <li>Postgres</li>
 </ul>
