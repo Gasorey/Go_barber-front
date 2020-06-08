@@ -34,7 +34,8 @@ const Profile: React.FC = () => {
 
         data.append('avatar', event.target.files[0]);
 
-        api.patch('/users/avatar', data).then(() => {
+        api.patch('/users/avatar', data).then((response) => {
+          updateUser(response.data);
           addToast({
             type: 'success',
             title: 'Avatar alterado com sucesso',
@@ -42,7 +43,7 @@ const Profile: React.FC = () => {
         });
       }
     },
-    [addToast],
+    [addToast, updateUser],
   );
 
   const handleSubmit = useCallback(
