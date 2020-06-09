@@ -52,7 +52,7 @@ const Profile: React.FC = () => {
     async (data: ProfileFormData) => {
       try {
         formRef.current?.setErrors({});
-        console.log(data);
+
         const schema = Yup.object().shape({
           name: Yup.string().required('Nome é obrigatório'),
           email: Yup.string()
@@ -60,7 +60,7 @@ const Profile: React.FC = () => {
             .email('Digite um e-mail válido'),
           old_password: Yup.string(),
           password: Yup.string().when('old_password', {
-            is: (val) => !!val.lenght,
+            is: (val) => !!val.lenth,
             then: Yup.string().required(),
             otherwise: Yup.string(),
           }),
@@ -77,13 +77,35 @@ const Profile: React.FC = () => {
           abortEarly: false,
         });
 
-        // await api.put('/profile', data);
+        const {
+          name,
+          email,
+          password,
+          password_confirmation,
+          old_password,
+        } = data;
 
-        // history.push('/dashboard');
+        const formData = {
+          name,
+          email,
+          ...(old_password
+            ? {
+                old_password,
+                password,
+                password_confirmation,
+              }
+            : {}),
+        };
+
+        const response = await api.put('/profile', formData);
+
+        updateUser(response.data);
+
+        history.push('/dashboard');
 
         addToast({
           type: 'success',
-          title: 'Cadastro realizado com sucesso',
+          title: 'Perfil atualizado com sucesso!',
           description: 'Você já pode fazer seu logon no Go Barber!',
         });
       } catch (err) {
@@ -96,8 +118,9 @@ const Profile: React.FC = () => {
         }
         addToast({
           type: 'error',
-          title: 'Erro no cadastro ',
-          description: 'Ocorreu um erro ao fazer cadastro, tente novamente',
+          title: 'Erro na atualização ',
+          description:
+            'Ocorreu um erro ao atualizar seu cadastro, tente novamente',
         });
       }
     },
